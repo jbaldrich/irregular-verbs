@@ -9,6 +9,46 @@ export class FindAllVerbs {
     }
 
     execute(): Verb[] {
-        return this.repository.all();
+        let verbs = this.repository.all();
+        return verbs.map(verb => {
+                const column = Math.floor(Math.random() * 4);
+                console.log('column: ' + column);
+                switch(column) {
+                    case 0:
+                        return new Verb(
+                            verb.id,
+                            verb.infinitive,
+                            '',
+                            '',
+                            '',
+                        )
+                    case 1:
+                        return new Verb(
+                            verb.id,
+                            '',
+                            verb.pastTense,
+                            '',
+                            '',
+                        )
+                    case 2:
+                        return new Verb(
+                            verb.id,
+                            '',
+                            '',
+                            verb.pastParticiple,
+                            '',
+                        )
+                    case 3:
+                        return new Verb(
+                            verb.id,
+                            '',
+                            '',
+                            '',
+                            verb.translation
+                        )
+                }
+                return verb;
+            }
+        );
     }
 }
