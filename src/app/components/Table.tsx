@@ -96,11 +96,15 @@ export const Table = ({ verbs }: TableProps) => {
           }
         </tbody>
       </table>
-      <button disabled={
-        status === 'submitting'
-      }>
-        Submit
-      </button>
+      <div className="py-4 flex items-center justify-center">
+        <button
+          className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+          disabled={status !== 'pending'}
+        >
+          Validate
+        </button>
+      </div>
+
       {error !== null &&
         <p className="Error">
           {error.message}
