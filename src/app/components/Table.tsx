@@ -1,17 +1,25 @@
 'use client'
 
+import { ValidateVerbs } from "@/application/ValidateVerbs";
 import { Verb } from "@/domain/Verb";
+import { FileSystemVerbRepository } from "@/infrastructure/FileSystemVerbRepository";
 import React, { useState } from "react";
 
 function validate(answers: Answers): Promise<Answers> {
-  const validated: Answers = new Map([...answers].map(answer =>
-    [answer[0], {
-      translation: { verb: answer[1].translation.verb ?? '', isValid: answer[1].translation.verb != '' },
-      infinitive: { verb: answer[1].infinitive.verb ?? '', isValid: answer[1].infinitive.verb != '' },
-      pastTense: { verb: answer[1].pastTense.verb ?? '', isValid: answer[1].pastTense.verb != '' },
-      pastParticiple: { verb: answer[1].pastParticiple.verb ?? '', isValid: answer[1].pastParticiple.verb != '' }
+  const validated: Answers = new Map(new ValidateVerbs(new FileSystemVerbRepository()).execute([...answers].map(pair => new Verb(
+    pair[0],
+    pair[1].infinitive.verb,
+    pair[1].pastTense.verb,
+    pair[1].pastParticiple.verb,
+    pair[1].translation.verb,
+  ))).map(validated =>
+    [validated.id, {
+      translation: { verb: validated.translation.attempt, isValid: validated.translation.isCorrect() },
+      infinitive: { verb: validated.infinitive.attempt, isValid: validated.infinitive.isCorrect() },
+      pastTense: { verb: validated.pastTense.attempt, isValid: validated.pastTense.isCorrect() },
+      pastParticiple: { verb: validated.pastParticiple.attempt, isValid: validated.pastParticiple.isCorrect() },
     }]
-  ))
+  ));
   return new Promise<Answers>((resolve, reject) => {
     setTimeout(() => {
       let shouldError = false;
@@ -20,7 +28,7 @@ function validate(answers: Answers): Promise<Answers> {
       } else {
         resolve(validated);
       }
-    }, 1500);
+    }, 0);
   });
 }
 
@@ -123,10 +131,13 @@ type CellProps = {
 }
 
 export const Cell = ({ verbId, name, value, isValid, onChange }: CellProps) => {
+  if (isValid !== null && isValid !== undefined && !isValid) {
+    return(<td className="px-6 py-4 bg-red-700">{value}</td>)
+  }
   return (
     <td className="px-6 py-4">
       {
-        value == '' && (isValid === null || !isValid) ?
+        value == '' ?
           <input
             className="text-gray-800"
             type="text"

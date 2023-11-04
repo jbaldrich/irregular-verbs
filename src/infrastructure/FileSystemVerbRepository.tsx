@@ -12,10 +12,17 @@ export class FileSystemVerbRepository implements VerbRepository {
         },
         {
           "id": "2",
-          "translation": "ser/estar",
-          "infinitve": "be",
-          "pastTense": "was/were",
-          "pastParticiple": "been"
+          "translation": "arribar a ser/esdevenir",
+          "infinitve": "become",
+          "pastTense": "became",
+          "pastParticiple": "become"
+        },
+        {
+          "id": "3",
+          "translation": "mossegar",
+          "infinitve": "bite",
+          "pastTense": "bit",
+          "pastParticiple": "bitten"
         }
       ];
     all(): Verb[] {
