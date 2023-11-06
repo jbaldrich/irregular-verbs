@@ -5,7 +5,7 @@ import { Verb } from "@/domain/Verb";
 import { FileSystemVerbRepository } from "@/infrastructure/FileSystemVerbRepository";
 import React, { useState } from "react";
 
-function validate(answers: Answers): Promise<Answers> {
+async function validate(answers: Answers): Promise<Answers> {
   const validated: Answers = new Map(new ValidateVerbs(new FileSystemVerbRepository()).execute([...answers].map(pair => new Verb(
     pair[0],
     pair[1].infinitive.verb,
@@ -28,7 +28,7 @@ function validate(answers: Answers): Promise<Answers> {
       } else {
         resolve(validated);
       }
-    }, 0);
+    }, 1200);
   });
 }
 
@@ -70,7 +70,7 @@ export const Table = ({ verbs }: TableProps) => {
       setAnswers(validAnswers);
       setStatus('success');
     } catch (err: Error | any) {
-      setStatus('typing');
+      setStatus('error');
       setError(err);
     }
   }
@@ -111,6 +111,12 @@ export const Table = ({ verbs }: TableProps) => {
         >
           Validate
         </button>
+        <button
+          className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+          hidden={status !== 'success' && status !== 'error'}
+          onClick={() => window.location.reload()}
+        >Start again
+        </button>
       </div>
 
       {error !== null &&
@@ -132,7 +138,7 @@ type CellProps = {
 
 export const Cell = ({ verbId, name, value, isValid, onChange }: CellProps) => {
   if (isValid !== null && isValid !== undefined && !isValid) {
-    return(<td className="px-6 py-4 bg-red-700">{value}</td>)
+    return (<td className="px-6 py-4 bg-red-700">{value}</td>)
   }
   return (
     <td className="px-6 py-4">
