@@ -171,11 +171,12 @@ export const Cell = ({ verbId, name, value, answer, isValid, onChange }: CellPro
       {
         answer === null ?
           <input
-            className="text-gray-800"
+            className="text-gray-800 w-40"
             type="text"
             id={verbId}
             name={name}
             onChange={onChange}
+            autoComplete="off"
           ></input> : value
       }
     </td>
