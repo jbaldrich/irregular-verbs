@@ -43,6 +43,8 @@ type Verb2 = {
   readonly pastParticiple: Answer;
 }
 
+type Tense = keyof Verb2;
+
 type Answer = {
   verb: string;
   answer: string | null;
@@ -53,12 +55,18 @@ type Answers = Map<string, Verb2>;
 
 export const Table = ({ verbs }: TableProps) => {
   const [answers, setAnswers] = useState<Answers>(new Map(verbs.map(verb =>
-    [verb.id, {
-      translation: { verb: verb.translation ?? '', isValid: null, answer: null },
-      infinitive: { verb: verb.infinitive ?? '', isValid: null, answer: null },
-      pastTense: { verb: verb.pastTense ?? '', isValid: null, answer: null },
-      pastParticiple: { verb: verb.pastParticiple ?? '', isValid: null, answer: null }
-    }]
+    {
+      const translation = verb.translation === '' ? null : verb.translation;
+      const infinitive = verb.infinitive === '' ? null : verb.infinitive;
+      const pastTense = verb.pastTense === '' ? null : verb.pastTense;
+      const pastParticiple = verb.pastParticiple === '' ? null : verb.pastParticiple;
+      return [verb.id, {
+        translation: { verb: translation ?? '', isValid: null, answer: translation },
+        infinitive: { verb: infinitive ?? '', isValid: null, answer: infinitive },
+        pastTense: { verb: pastTense ?? '', isValid: null, answer: pastTense },
+        pastParticiple: { verb: pastParticiple ?? '', isValid: null, answer: pastParticiple }
+      }]
+    }
   )));
   const [error, setError] = useState<Error | null>(null);
   const [status, setStatus] = useState('pending');
@@ -77,9 +85,26 @@ export const Table = ({ verbs }: TableProps) => {
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const newVerb = { ...answers.get(e.target.id), [e.target.name]: { verb: e.target.value } } as Verb2;
+    const tense = e.target.name as Tense;
+    const answer = {...answers.get(e.target.id)?.[tense], ...{verb: e.target.value}} as Answer;
+    const newVerb = {...answers.get(e.target.id), ...{[e.target.name]: answer}} as Verb2
     answers.set(e.target.id, newVerb);
+
+    let isReady: boolean = true;
+    answers.forEach(verb => {
+      if (verb.translation.verb === '' || verb.infinitive.verb === '' || verb.pastTense.verb === '' || verb.pastParticiple.verb === '') {
+        isReady = false;
+        return;
+      }
+    })
+
+    if (isReady) {
+      setStatus('ready');
+    }
   }
+
+  const printCell = (answer: [string, Verb2], tense: Tense) =>
+    <Cell verbId={answer[0]} name={tense} value={answer[1][tense].verb} answer={answer[1][tense].answer} isValid={answer[1][tense].isValid} onChange={handleInputChange} />
 
   return (
     <form className='shadow-md rounded px-8 pt-6 pb-8 mb-4' onSubmit={handleSubmit}>
@@ -96,10 +121,10 @@ export const Table = ({ verbs }: TableProps) => {
           {
             [...answers].map(answer =>
               <tr className="bg-gray-50 border-b dark:bg-gray-800 dark:border-gray-700" key={answer[0]}>
-                <Cell verbId={answer[0]} name='translation' value={answer[1].translation.verb} answer={answer[1].translation.answer} isValid={answer[1].translation.isValid} onChange={handleInputChange} />
-                <Cell verbId={answer[0]} name='infinitive' value={answer[1].infinitive.verb} answer={answer[1].infinitive.answer} isValid={answer[1].infinitive.isValid} onChange={handleInputChange} />
-                <Cell verbId={answer[0]} name='pastTense' value={answer[1].pastTense.verb} answer={answer[1].pastTense.answer} isValid={answer[1].pastTense.isValid} onChange={handleInputChange} />
-                <Cell verbId={answer[0]} name='pastParticiple' value={answer[1].pastParticiple.verb} answer={answer[1].pastParticiple.answer} isValid={answer[1].pastParticiple.isValid} onChange={handleInputChange} />
+                {printCell(answer, 'translation')}
+                {printCell(answer, 'infinitive')}
+                {printCell(answer, 'pastTense')}
+                {printCell(answer, 'pastParticiple')}
               </tr>
             )
           }
@@ -108,7 +133,7 @@ export const Table = ({ verbs }: TableProps) => {
       <div className="py-4 flex items-center justify-center">
         <button
           className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-          hidden={status !== 'pending'}
+          hidden={status !== 'ready'}
         >
           Validate
         </button>
@@ -145,7 +170,7 @@ export const Cell = ({ verbId, name, value, answer, isValid, onChange }: CellPro
   return (
     <td className="px-6 py-4">
       {
-        value == '' ?
+        answer === null ?
           <input
             className="text-gray-800"
             type="text"
