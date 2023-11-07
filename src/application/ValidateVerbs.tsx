@@ -11,9 +11,15 @@ class Validation {
         this.attempt = attempt;
         this.answer = answer;
     }
-    
+
     isCorrect(): boolean {
-        return this.attempt === this.answer;
+        return this.attempt
+            .toLowerCase()
+            .replace('  ', ' ')
+            .split('/')
+            .map(val => val.trim())
+            .join('/')
+            === this.answer;
     }
 }
 
@@ -37,7 +43,7 @@ export class ValidatedVerb {
         this.pastTense = pastTense;
         this.pastParticiple = pastParticiple;
     }
-    
+
     areAllCorrect(): boolean {
         return this.translation.isCorrect()
             && this.infinitive.isCorrect()
