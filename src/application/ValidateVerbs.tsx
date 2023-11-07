@@ -16,6 +16,7 @@ class Validation {
         return this.attempt
             .toLowerCase()
             .replace('  ', ' ')
+            .replace('è', 'e')
             .split('/')
             .map(val => val.trim())
             .join('/')
