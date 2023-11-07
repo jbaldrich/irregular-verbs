@@ -28,7 +28,7 @@ async function validate(answers: Answers): Promise<Answers> {
       } else {
         resolve(validated);
       }
-    }, 1200);
+    }, 0);
   });
 }
 
@@ -54,19 +54,18 @@ type Answer = {
 type Answers = Map<string, Verb2>;
 
 export const Table = ({ verbs }: TableProps) => {
-  const [answers, setAnswers] = useState<Answers>(new Map(verbs.map(verb =>
-    {
-      const translation = verb.translation === '' ? null : verb.translation;
-      const infinitive = verb.infinitive === '' ? null : verb.infinitive;
-      const pastTense = verb.pastTense === '' ? null : verb.pastTense;
-      const pastParticiple = verb.pastParticiple === '' ? null : verb.pastParticiple;
-      return [verb.id, {
-        translation: { verb: translation ?? '', isValid: null, answer: translation },
-        infinitive: { verb: infinitive ?? '', isValid: null, answer: infinitive },
-        pastTense: { verb: pastTense ?? '', isValid: null, answer: pastTense },
-        pastParticiple: { verb: pastParticiple ?? '', isValid: null, answer: pastParticiple }
-      }]
-    }
+  const [answers, setAnswers] = useState<Answers>(new Map(verbs.map(verb => {
+    const translation = verb.translation === '' ? null : verb.translation;
+    const infinitive = verb.infinitive === '' ? null : verb.infinitive;
+    const pastTense = verb.pastTense === '' ? null : verb.pastTense;
+    const pastParticiple = verb.pastParticiple === '' ? null : verb.pastParticiple;
+    return [verb.id, {
+      translation: { verb: translation ?? '', isValid: null, answer: translation },
+      infinitive: { verb: infinitive ?? '', isValid: null, answer: infinitive },
+      pastTense: { verb: pastTense ?? '', isValid: null, answer: pastTense },
+      pastParticiple: { verb: pastParticiple ?? '', isValid: null, answer: pastParticiple }
+    }]
+  }
   )));
   const [error, setError] = useState<Error | null>(null);
   const [status, setStatus] = useState('pending');
@@ -86,8 +85,8 @@ export const Table = ({ verbs }: TableProps) => {
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const tense = e.target.name as Tense;
-    const answer = {...answers.get(e.target.id)?.[tense], ...{verb: e.target.value}} as Answer;
-    const newVerb = {...answers.get(e.target.id), ...{[e.target.name]: answer}} as Verb2
+    const answer = { ...answers.get(e.target.id)?.[tense], ...{ verb: e.target.value } } as Answer;
+    const newVerb = { ...answers.get(e.target.id), ...{ [e.target.name]: answer } } as Verb2;
     answers.set(e.target.id, newVerb);
 
     let isReady: boolean = true;
@@ -155,17 +154,17 @@ export const Table = ({ verbs }: TableProps) => {
 }
 
 type CellProps = {
-  verbId: string
-  name: string
-  value: string
-  answer: string | null
-  isValid: boolean | null
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  verbId: string;
+  name: string;
+  value: string;
+  answer: string | null;
+  isValid: boolean | null;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const Cell = ({ verbId, name, value, answer, isValid, onChange }: CellProps) => {
   if (isValid !== null && isValid !== undefined && !isValid) {
-    return (<td className="px-6 py-4 bg-red-700"><s>{value}</s> {'->'} <strong>{answer}</strong></td>)
+    return (<td className="px-6 py-4 bg-red-700"><s>{value}</s> {'->'} <strong>{answer}</strong></td>);
   }
   return (
     <td className="px-6 py-4">
