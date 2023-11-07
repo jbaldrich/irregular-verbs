@@ -177,6 +177,41 @@ export class FileSystemVerbRepository implements VerbRepository {
           "infinitve": "go",
           "pastTense": "went",
           "pastParticiple": "gone"
+        },
+        {
+          "id": "26",
+          "translation": "haver/tenir/prendre",
+          "infinitve": "have",
+          "pastTense": "had",
+          "pastParticiple": "had"
+        },
+        {
+          "id": "27",
+          "translation": "sentir un soroll",
+          "infinitve": "hear",
+          "pastTense": "heard",
+          "pastParticiple": "heard"
+        },
+        {
+          "id": "28",
+          "translation": "ferir/fer mal",
+          "infinitve": "hurt",
+          "pastTense": "hurt",
+          "pastParticiple": "hurt"
+        },
+        {
+          "id": "29",
+          "translation": "saber/conèixer",
+          "infinitve": "know",
+          "pastTense": "knew",
+          "pastParticiple": "known"
+        },
+        {
+          "id": "30",
+          "translation": "guiar/dirigir",
+          "infinitve": "lead",
+          "pastTense": "led",
+          "pastParticiple": "led"
         }
       ];
     all(): Verb[] {

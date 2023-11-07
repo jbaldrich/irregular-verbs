@@ -119,7 +119,7 @@ export const Table = ({ verbs }: TableProps) => {
         <tbody>
           {
             [...answers].map(answer =>
-              <tr className="bg-gray-50 border-b dark:bg-gray-800 dark:border-gray-700" key={answer[0]}>
+              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700" key={answer[0]}>
                 {printCell(answer, 'translation')}
                 {printCell(answer, 'infinitive')}
                 {printCell(answer, 'pastTense')}

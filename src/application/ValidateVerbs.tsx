@@ -19,7 +19,7 @@ class Validation {
             .split('/')
             .map(val => val.trim())
             .join('/')
-            === this.answer;
+            === this.answer.replace('è', 'e');
     }
 }
 
