@@ -132,7 +132,7 @@ export const Table = ({ verbs }: TableProps) => {
       <div className="py-4 flex items-center justify-center">
         <button
           className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-          hidden={status !== 'ready'}
+          hidden={status !== 'ready' && status !== 'pending'}
         >
           Validate
         </button>
@@ -177,6 +177,7 @@ export const Cell = ({ verbId, name, value, answer, isValid, onChange }: CellPro
             name={name}
             onChange={onChange}
             autoComplete="off"
+            required
           ></input> : value
       }
     </td>
